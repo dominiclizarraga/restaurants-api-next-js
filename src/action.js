@@ -3,5 +3,6 @@
 
 export async function getRestaurants () {
   const resp = await fetch(process.env.API_URL)
-  console.log(resp)
+  const data = await resp.json();
+  return data
 }
