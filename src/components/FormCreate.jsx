@@ -1,20 +1,37 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import restaurantCategories from "@/restaurant_categories";
 import BackButton from "@/components/BackButton";
 import { createRestaurant } from "@/actions";
 
 export default function FormCreate() {
-  const [state, action, isPending] = useActionState(createRestaurant, null);
+  const [formData, setFormData] = useState({})
 
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
+  const handleSubmit = async (event) => {
+
+    event.preventDefault();
+    try {
+      // llamar function del actions.js
+      const data = await createRestaurant(formData)
+      setFormData({
+        // name: "",
+        // address: "",
+        // category: ""
+      })
+    } catch (error) {
+      console.error("Submission Error:", error);
+      // alert(error.message);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   return (
-    <form action={action} className="space-y-6 w-full md:w-1/2 mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-6 w-full md:w-1/2 mx-auto">
       <BackButton text={`← Back to Restaurants`} href={"/"} />
       <h3 className="text-2xl">Add a restaurant 🍳</h3>
 
@@ -26,6 +43,8 @@ export default function FormCreate() {
           type="text"
           name="name"
           id="name"
+          onChange={handleInputChange}
+          value={formData["name"] || ""}
           placeholder="Enter restaurant name (e.g., Delicious Bites)"
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -40,6 +59,8 @@ export default function FormCreate() {
           type="text"
           name="address"
           id="address"
+          onChange={handleInputChange}
+          value={formData["address"] || ""}
           placeholder="Enter full restaurant address (e.g., 123 Tasty Street, London)"
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -53,6 +74,8 @@ export default function FormCreate() {
         <select
           name="category"
           id="category"
+          onChange={handleInputChange}
+          value={formData["category"] || ""}
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         >
