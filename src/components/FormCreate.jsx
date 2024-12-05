@@ -1,57 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState } from "react";
 import restaurantCategories from "@/restaurant_categories";
 import BackButton from "@/components/BackButton";
+import { createRestaurant } from "@/actions";
 
 export default function FormCreate() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    category: "",
-  });
+  const [state, action, isPending] = useActionState(createRestaurant, null);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const response = await fetch(
-        "https://the-fork.api.lewagon.com/api/v1/restaurants",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-User-Email": process.env.NEXT_PUBLIC_API_EMAIL,
-            "X-User-Token": process.env.NEXT_PUBLIC_API_TOKEN,
-          },
-          body: JSON.stringify({ restaurant: formData }),
-        }
-      );
-  
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        console.error("API Response:", errorResponse);
-        throw new Error(errorResponse.message || `Failed with status ${response.status}`);
-      }
-  
-      const data = await response.json();
-      router.push("/");
-    } catch (error) {
-      console.error("Submission Error:", error);
-      alert(error.message);
-    }
-  };
-  
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full md:w-1/2 mx-auto">
+    <form action={action} className="space-y-6 w-full md:w-1/2 mx-auto">
       <BackButton text={`← Back to Restaurants`} href={"/"} />
       <h3 className="text-2xl">Add a restaurant 🍳</h3>
 
@@ -64,8 +27,6 @@ export default function FormCreate() {
           name="name"
           id="name"
           placeholder="Enter restaurant name (e.g., Delicious Bites)"
-          value={formData.name}
-          onChange={handleInputChange}
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         />
@@ -80,8 +41,6 @@ export default function FormCreate() {
           name="address"
           id="address"
           placeholder="Enter full restaurant address (e.g., 123 Tasty Street, London)"
-          value={formData.address}
-          onChange={handleInputChange}
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         />
@@ -94,8 +53,6 @@ export default function FormCreate() {
         <select
           name="category"
           id="category"
-          value={formData.category}
-          onChange={handleInputChange}
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         >

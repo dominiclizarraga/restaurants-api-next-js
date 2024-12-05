@@ -25,3 +25,45 @@ export async function fetchRestaurantById(id) {
 
   return resp.json();
 }
+
+export async function createRestaurant(prevState, formData){
+  const name = formData.get('name');
+  const address = formData.get('address');
+  const category = formData.get('category');
+
+  const body = {
+    restaurant : {
+      name,
+      address,
+      category
+    }
+  }
+
+  try {
+    const response = await fetch(
+      "https://the-fork.api.lewagon.com/api/v1/restaurants",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Email": process.env.NEXT_PUBLIC_API_EMAIL,
+          "X-User-Token": process.env.NEXT_PUBLIC_API_TOKEN,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    console.log(`response!!: `,response)
+
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      console.error("API Response:", errorResponse);
+      throw new Error(errorResponse.message || `Failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+  } catch (error) {
+    console.error("Submission Error:", error);
+    // alert(error.message);
+  }
+};
