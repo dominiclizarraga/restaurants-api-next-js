@@ -1,11 +1,10 @@
-import BackButton from "@/components/BackButton";
+import FormCreate from "@/components/FormCreate";
 
 export default function Create() {
 
   return (
-    <div className="min-h-screen sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <BackButton text={`← Back to Restaurants`} href={"/"} />
-      Form to create
+    <div className="p-10 md:p-20 font-[family-name:var(--font-geist-sans)]">
+      <FormCreate />
     </div>
   );
 }
