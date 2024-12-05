@@ -8,11 +8,11 @@ export async function getRestaurants () {
 }
 
 export async function fetchRestaurantById(id) {
-  const resp = await fetch(`${process.env.API_URL}/${id}`, {
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${id}`, {
     method: "GET",
     headers: {
-      "X-User-Email": process.env.API_EMAIL,
-      "X-User-Token": process.env.API_TOKEN,
+      "X-User-Email": process.env.NEXT_PUBLIC_API_EMAIL,
+      "X-User-Token": process.env.NEXT_PUBLIC_API_TOKEN,
     },
   });
 

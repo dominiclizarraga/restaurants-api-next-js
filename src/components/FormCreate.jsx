@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import restaurantCategories from "@/restaurant_categories";
 import BackButton from "@/components/BackButton";
 
 export default function FormCreate() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -18,7 +20,7 @@ export default function FormCreate() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     try {
       const response = await fetch(
         "https://the-fork.api.lewagon.com/api/v1/restaurants",
@@ -33,25 +35,17 @@ export default function FormCreate() {
         }
       );
   
-      console.log("Response status:", response.status);
-      console.log("Response headers:", Object.fromEntries(response.headers));
-  
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Full error response:", errorText);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        const errorResponse = await response.json();
+        console.error("API Response:", errorResponse);
+        throw new Error(errorResponse.message || `Failed with status ${response.status}`);
       }
   
       const data = await response.json();
-      console.log("Successfully created restaurant:", data);
-      alert(`Restaurant "${data.name}" created successfully!`);
-      
+      router.push("/");
     } catch (error) {
-      console.error("Detailed Submission Error:", {
-        message: error.message,
-        stack: error.stack
-      });
-      alert(`Submission failed: ${error.message}`);
+      console.error("Submission Error:", error);
+      alert(error.message);
     }
   };
   
@@ -69,6 +63,7 @@ export default function FormCreate() {
           type="text"
           name="name"
           id="name"
+          placeholder="Enter restaurant name (e.g., Delicious Bites)"
           value={formData.name}
           onChange={handleInputChange}
           required
@@ -84,6 +79,7 @@ export default function FormCreate() {
           type="text"
           name="address"
           id="address"
+          placeholder="Enter full restaurant address (e.g., 123 Tasty Street, London)"
           value={formData.address}
           onChange={handleInputChange}
           required
@@ -103,7 +99,7 @@ export default function FormCreate() {
           required
           className="mt-1 block w-full rounded-md shadow-sm border-2 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="">Select a category</option>
+          <option value="">Select category</option>
           {restaurantCategories.map((category) => (
             <option key={category} value={category}>
               {category}

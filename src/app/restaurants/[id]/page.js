@@ -3,10 +3,10 @@ import BackButton from "@/components/BackButton";
 import Image from "next/image";
 
 export default async function Detail({ params }) {
-  const { id } = params;
+  const restaurantId = params.id;
 
   try {
-    const restaurantDetails = await fetchRestaurantById(id);
+    const restaurantDetails = await fetchRestaurantById(restaurantId);
 
     return (
       <div className="min-h-screen sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -25,9 +25,10 @@ export default async function Detail({ params }) {
           <div className="w-3/4 md:w-1/2 flex justify-center">
             <Image
               src="/default_dish.png"
-              alt="default_dish"
+              alt="Restaurant default image"
               width={800}
               height={600}
+              priority // Add priority to resolve LCP warning
               className="rounded-lg shadow-lg"
             />
           </div>
@@ -38,7 +39,7 @@ export default async function Detail({ params }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <h1 className="text-2xl font-bold text-red-500">
-          Error: {error.message}
+          Error: {error instanceof Error ? error.message : 'An unknown error occurred'}
         </h1>
       </div>
     );
