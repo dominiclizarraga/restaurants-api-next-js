@@ -2,35 +2,39 @@
 // place here all the actions that will run on the server
 
 export async function getRestaurants () {
-  const resp = await fetch(process.env.API_URL)
+  const resp = await fetch(process.env.NEXT_PUBLIC_API_URL)
   const data = await resp.json();
   return data
 }
 
 export async function fetchRestaurantById(id) {
-  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${id}`, {
-    method: "GET",
-    headers: {
-      "X-User-Email": process.env.NEXT_PUBLIC_API_EMAIL,
-      "X-User-Token": process.env.NEXT_PUBLIC_API_TOKEN,
-    },
-  });
+  try {
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${id}`, {
+      method: "GET",
+      headers: {
+        "X-User-Email": process.env.NEXT_PUBLIC_API_EMAIL,
+        "X-User-Token": process.env.NEXT_PUBLIC_API_TOKEN,
+      },
+    });
 
-  if (!resp.ok) {
-    const errorData = await resp.json();
-    throw new Error(
-      errorData.error || `Failed to fetch restaurant with ID: ${id}`
-    );
+    if (!resp.ok) {
+      throw new Error(
+        `Failed to fetch restaurant with ID: ${id}`
+      );
+    }
+
+    const data = await resp.json()
+    return data;
+  } catch (error) {
+    return undefined;
   }
-
-  return resp.json();
 }
 
 export async function createRestaurant(formData) {
   console.log(`formData!: `, formData)
   try {
     const response = await fetch(
-      "https://the-fork.api.lewagon.com/api/v1/restaurants",
+      process.env.NEXT_PUBLIC_API_URL,
       {
         method: "POST",
         headers: {

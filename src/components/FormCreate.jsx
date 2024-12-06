@@ -4,24 +4,20 @@ import { useActionState, useState } from "react";
 import restaurantCategories from "@/restaurant_categories";
 import BackButton from "@/components/BackButton";
 import { createRestaurant } from "@/actions";
+import { useRouter } from "next/navigation"; // este hook es para CLIENT!!!
 
 export default function FormCreate() {
   const [formData, setFormData] = useState({})
+  const router = useRouter();
 
   const handleSubmit = async (event) => {
-
     event.preventDefault();
     try {
-      // llamar function del actions.js
       const data = await createRestaurant(formData)
-      setFormData({
-        // name: "",
-        // address: "",
-        // category: ""
-      })
+      setFormData({})
+      router.push("/")
     } catch (error) {
       console.error("Submission Error:", error);
-      // alert(error.message);
     }
   };
 
