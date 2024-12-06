@@ -52,6 +52,7 @@ export async function createRestaurant(formData) {
     }
   
     const data = await response.json();
+    return data;
   } catch (error) {
     console.log(`Error at createRestaurant`, error)
     throw error
